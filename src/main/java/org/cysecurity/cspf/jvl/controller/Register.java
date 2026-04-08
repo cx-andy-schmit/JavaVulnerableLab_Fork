@@ -83,7 +83,7 @@ public class Register extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method. boopsdddddd
+     * Handles the HTTP <code>GET</code> method. boopsddddddfff
      *
      * @param request servlet request
      * @param response servlet response
