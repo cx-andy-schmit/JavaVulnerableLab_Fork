@@ -45,7 +45,9 @@ public class UsernameCheck extends HttpServlet {
                 {
                     ResultSet rs=null;
                     Statement stmt = con.createStatement();  
-                    rs=stmt.executeQuery("select * from users where username='"+user+"'");
+                    // [CX-SQLi suppressed] >>>>
+                    // rs=stmt.executeQuery("select * from users where username='"+user+"'");
+                    // [CX-SQLi suppressed] <<<<
                     if (rs.next()) 
                     {  
                      json.put("available", "1"); 

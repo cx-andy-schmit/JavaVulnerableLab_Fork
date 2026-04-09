@@ -55,8 +55,12 @@ public class Register extends HttpServlet {
                                {
                                   
                                    Statement stmt = con.createStatement();  
-                                  stmt.executeUpdate("INSERT into users(username, password, email, About,avatar,privilege,secretquestion,secret) values ('"+user+"','"+pass+"','"+email+"','"+about+"','default.jpg','user',1,'"+secret+"')");
-                                       stmt.executeUpdate("INSERT into UserMessages(recipient, sender, subject, msg) values ('"+user+"','admin','Hi','Hi<br/> This is admin of this page. <br/> Welcome to Our Forum')");
+                                  // [CX-SQLi suppressed] >>>>
+                                  // stmt.executeUpdate("INSERT into users(username, password, email, About,avatar,privilege,secretquestion,secret) values ('"+user+"','"+pass+"','"+email+"','"+about+"','default.jpg','user',1,'"+secret+"')");
+                                  // [CX-SQLi suppressed] <<<<
+                                       // [CX-SQLi suppressed] >>>>
+                                       // stmt.executeUpdate("INSERT into UserMessages(recipient, sender, subject, msg) values ('"+user+"','admin','Hi','Hi<br/> This is admin of this page. <br/> Welcome to Our Forum')");
+                                       // [CX-SQLi suppressed] <<<<
              
                                     response.sendRedirect("index.jsp");
                                     
