@@ -102,10 +102,10 @@ public class Install extends HttpServlet {
     }
      protected boolean setup(String i) throws IOException
     {
-        
-       if(i.equals("1"))   
+
+       if(i.equals("1"))
        {
- 
+
                     try
                    {
                     Class.forName(jdbcdriver);
@@ -113,7 +113,13 @@ public class Install extends HttpServlet {
                       if(con!=null && !con.isClosed())
                         {
                             //Database creation
-                             Statement stmt = con.createStatement();  
+                             Statement stmt = con.createStatement();
+                             // Validate database name to prevent SQL injection
+                             // MySQL database names must contain only alphanumeric characters and underscores
+                             // and must not start with a digit
+                             if (!isValidDatabaseName(dbname)) {
+                                 throw new SQLException("Invalid database name. Database names must contain only letters, numbers, and underscores, and must start with a letter or underscore.");
+                             }
                              stmt.executeUpdate("DROP DATABASE IF EXISTS "+dbname);
                              
                              stmt.executeUpdate("CREATE DATABASE "+dbname);
@@ -223,5 +229,27 @@ public class Install extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    /**
+     * Validates database name to prevent SQL injection.
+     * Database names must:
+     * - Start with a letter or underscore
+     * - Contain only letters, numbers, and underscores
+     * - Not exceed 64 characters (MySQL limit)
+     *
+     * @param databaseName the database name to validate
+     * @return true if valid, false otherwise
+     */
+    private boolean isValidDatabaseName(String databaseName) {
+        if (databaseName == null || databaseName.isEmpty()) {
+            return false;
+        }
+        // Check length (MySQL database name limit is 64 characters)
+        if (databaseName.length() > 64) {
+            return false;
+        }
+        // Validate pattern: must start with letter or underscore, followed by alphanumeric or underscores
+        return databaseName.matches("^[a-zA-Z_][a-zA-Z0-9_]*$");
+    }
 
 }
