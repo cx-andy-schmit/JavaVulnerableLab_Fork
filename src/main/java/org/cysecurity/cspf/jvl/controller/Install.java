@@ -97,7 +97,7 @@ public class Install extends HttpServlet {
         }
          catch(Exception e)
          {
-             
+             System.err.println("Exception occurred in processRequest: " + e.getMessage());
          }
     }
      protected boolean setup(String i) throws IOException
