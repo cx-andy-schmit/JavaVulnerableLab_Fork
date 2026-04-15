@@ -37,7 +37,7 @@ public class Install extends HttpServlet {
        static String adminpass;
                
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * Processes requests for both HTTP <code>GET</code> ands <code>POST</code>
      * methods.
      *
      * @param request servlet request
