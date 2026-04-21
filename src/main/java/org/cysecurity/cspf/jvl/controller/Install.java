@@ -15,6 +15,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement; 
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,7 @@ import org.cysecurity.cspf.jvl.model.HashMe;
  */
 public class Install extends HttpServlet {
 
+       private static final Logger LOGGER = Logger.getLogger(Install.class.getName());
        static String dburl;
        static String jdbcdriver;
        static String dbuser;
@@ -97,7 +100,7 @@ public class Install extends HttpServlet {
         }
          catch(Exception e)
          {
-             
+             LOGGER.log(Level.SEVERE, "Error processing install request", e);
          }
     }
      protected boolean setup(String i) throws IOException
@@ -109,20 +112,20 @@ public class Install extends HttpServlet {
                     try
                    {
                     Class.forName(jdbcdriver);
-                    Connection con= DriverManager.getConnection(dburl,dbuser,dbpass); 
+                    Connection con= DriverManager.getConnection(dburl,dbuser,dbpass);  
                       if(con!=null && !con.isClosed())
                         {
-                            //Database creation
+                            //Database creation 
                              Statement stmt = con.createStatement();  
                              stmt.executeUpdate("DROP DATABASE IF EXISTS "+dbname);
                              
                              stmt.executeUpdate("CREATE DATABASE "+dbname);
                              con.close();
-                            try (Connection con2 = DriverManager.getConnection(dburl+dbname,dbuser,dbpass);
+                            try (Connection con2 = DriverManager.getConnection(dburl+dbname,dbuser,dbpass); 
                                  Statement stmt2 = con2.createStatement()) {
                               if(!con2.isClosed())
                             {
-                                //User Table creation
+                                //User Table creation 
                                 stmt2.executeUpdate("Create table users(ID int NOT NULL AUTO_INCREMENT, username varchar(30),email varchar(60), password varchar(60), about varchar(50),privilege varchar(20),avatar TEXT,secretquestion int,secret varchar(30),primary key (id))");
                                   stmt2.executeUpdate("INSERT into users(username, password, email,About,avatar, privilege,secretquestion,secret) values ('"+adminuser+"','"+adminpass+"','admin@localhost','I am the admin of this application','default.jpg','admin',1,'rocky')");
                                   stmt2.executeUpdate("INSERT into users(username, password, email,About,avatar, privilege,secretquestion,secret) values ('victim','victim','victim@localhost','I am the victim of this application','default.jpg','user',1,'max')");
@@ -135,7 +138,7 @@ public class Install extends HttpServlet {
                                   stmt2.executeUpdate("create table posts(postid int NOT NULL AUTO_INCREMENT, content TEXT,title varchar(100), user varchar(30), primary key (postid))");
                                stmt2.executeUpdate("INSERT into posts(content,title, user) values ('Feel free to ask any questions about Java Vulnerable Lab','First Post', 'admin')");
                                stmt2.executeUpdate("INSERT into posts(content,title, user) values ('Hello Guys, this is victim','Second Post', 'victim')");
-                               stmt2.executeUpdate("INSERT into posts(content,title, user) values ('Hello This is attacker','Third Post', 'attacker')");
+                               stmt2.executeUpdate("INSERT into posts(content,title, user) values ('Hello This is attacker','Third Post', 'attacker')"); 
                                stmt2.executeUpdate("INSERT into posts(content,title, user) values ('Trinity! Help!','Help','neo')");
 
 
