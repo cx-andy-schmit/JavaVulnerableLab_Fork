@@ -43,7 +43,7 @@ public class Install extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occursss
+     * @throws IOException if an I/O error occurss
      */
    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -109,7 +109,7 @@ public class Install extends HttpServlet {
                     try
                    {
                     Class.forName(jdbcdriver);
-                    Connection con= DriverManager.getConnection(dburl,dbuser,dbpass);
+                    Connection con= DriverManager.getConnection(dburl,dbuser,dbpass); 
                       if(con!=null && !con.isClosed())
                         {
                             //Database creation
