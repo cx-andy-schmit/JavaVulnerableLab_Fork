@@ -102,21 +102,25 @@ public class Install extends HttpServlet {
     }
      protected boolean setup(String i) throws IOException
     {
-        
-       if(i.equals("1"))   
+
+       if(i.equals("1"))
        {
- 
+
                     try
                    {
                     Class.forName(jdbcdriver);
-                    Connection con= DriverManager.getConnection(dburl,dbuser,dbpass); 
+                    Connection con= DriverManager.getConnection(dburl,dbuser,dbpass);
                       if(con!=null && !con.isClosed())
                         {
                             //Database creation
-                             Statement stmt = con.createStatement();  
-                             stmt.executeUpdate("DROP DATABASE IF EXISTS "+dbname);
-                             
-                             stmt.executeUpdate("CREATE DATABASE "+dbname);
+                            // Validate database name to prevent SQL injection
+                            if (!isValidDatabaseName(dbname)) {
+                                throw new SQLException("Invalid database name: contains disallowed characters");
+                            }
+                             Statement stmt = con.createStatement();
+                             stmt.executeUpdate("DROP DATABASE IF EXISTS `"+dbname+"`");
+
+                             stmt.executeUpdate("CREATE DATABASE `"+dbname+"`");
                              con.close();
                             try (Connection con2 = DriverManager.getConnection(dburl+dbname,dbuser,dbpass);
                                  Statement stmt2 = con2.createStatement()) {
@@ -183,6 +187,26 @@ public class Install extends HttpServlet {
       
        }
         return false;
+    }
+
+    /**
+     * Validates database name to prevent SQL injection attacks.
+     * Database names should only contain alphanumeric characters, underscores, and dollar signs.
+     *
+     * @param dbName the database name to validate
+     * @return true if the database name is valid, false otherwise
+     */
+    private boolean isValidDatabaseName(String dbName) {
+        if (dbName == null || dbName.isEmpty()) {
+            return false;
+        }
+        // MySQL database names can contain alphanumeric, underscore, and dollar sign
+        // Length should be between 1 and 64 characters
+        if (dbName.length() > 64) {
+            return false;
+        }
+        // Only allow alphanumeric characters, underscores, and dollar signs
+        return dbName.matches("^[a-zA-Z0-9_$]+$");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
