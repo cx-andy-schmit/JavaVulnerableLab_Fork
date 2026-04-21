@@ -116,7 +116,13 @@ public class Install extends HttpServlet {
                              Statement stmt = con.createStatement();  
                              stmt.executeUpdate("DROP DATABASE IF EXISTS "+dbname);
                              
-                             stmt.executeUpdate("CREATE DATABASE "+dbname);
+                             // Validate database name to prevent SQL injection
+                             // Database identifiers must contain only alphanumeric characters and underscores
+                             if (dbname == null || !dbname.matches("^[a-zA-Z0-9_]+$")) {
+                                 throw new SQLException("Invalid database name. Only alphanumeric characters and underscores are allowed.");
+                             }
+                             // Use backticks to properly quote the identifier
+                             stmt.executeUpdate("CREATE DATABASE `"+dbname+"`");
                              con.close();
                             try (Connection con2 = DriverManager.getConnection(dburl+dbname,dbuser,dbpass);
                                  Statement stmt2 = con2.createStatement()) {
