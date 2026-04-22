@@ -15,8 +15,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement; 
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +27,6 @@ import org.cysecurity.cspf.jvl.model.HashMe;
  */
 public class Install extends HttpServlet {
 
-       private static final Logger LOGGER = Logger.getLogger(Install.class.getName());
        static String dburl;
        static String jdbcdriver;
        static String dbuser;
@@ -100,7 +97,7 @@ public class Install extends HttpServlet {
         }
          catch(Exception e)
          {
-             LOGGER.log(Level.SEVERE, "Error processing install request", e);
+             
          }
     }
      protected boolean setup(String i) throws IOException
