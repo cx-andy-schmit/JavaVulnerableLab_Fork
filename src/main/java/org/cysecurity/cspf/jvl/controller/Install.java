@@ -102,10 +102,10 @@ public class Install extends HttpServlet {
     }
      protected boolean setup(String i) throws IOException
     {
-        
-       if(i.equals("1"))   
+
+       if(i.equals("1"))
        {
- 
+
                     try
                    {
                     Class.forName(jdbcdriver);
@@ -113,12 +113,18 @@ public class Install extends HttpServlet {
                       if(con!=null && !con.isClosed())
                         {
                             //Database creation
-                             Statement stmt = con.createStatement();  
-                             stmt.executeUpdate("DROP DATABASE IF EXISTS "+dbname);
-                             
-                             stmt.executeUpdate("CREATE DATABASE "+dbname);
+                            // Validate database name to prevent SQL injection
+                            String validatedDbName = validateDatabaseName(dbname);
+                            if (validatedDbName == null) {
+                                System.err.println("Invalid database name provided");
+                                return false;
+                            }
+                             Statement stmt = con.createStatement();
+                             stmt.executeUpdate("DROP DATABASE IF EXISTS `" + validatedDbName + "`");
+
+                             stmt.executeUpdate("CREATE DATABASE `" + validatedDbName + "`");
                              con.close();
-                            con= DriverManager.getConnection(dburl+dbname,dbuser,dbpass); 
+                            con= DriverManager.getConnection(dburl+validatedDbName,dbuser,dbpass); 
                              stmt = con.createStatement();
                               if(!con.isClosed())
                             {
@@ -222,5 +228,32 @@ public class Install extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    /**
+     * Validates database name to prevent SQL injection.
+     * Database names must contain only alphanumeric characters, underscores, and hyphens.
+     * Maximum length is 64 characters (MySQL limit).
+     *
+     * @param dbName the database name to validate
+     * @return the validated database name, or null if invalid
+     */
+    private String validateDatabaseName(String dbName) {
+        if (dbName == null || dbName.isEmpty()) {
+            return null;
+        }
+
+        // MySQL database name constraints: alphanumeric, underscore, hyphen only
+        // Max length 64 characters
+        if (dbName.length() > 64) {
+            return null;
+        }
+
+        // Only allow alphanumeric characters, underscores, and hyphens
+        if (!dbName.matches("^[a-zA-Z0-9_-]+$")) {
+            return null;
+        }
+
+        return dbName;
+    }
 
 }
