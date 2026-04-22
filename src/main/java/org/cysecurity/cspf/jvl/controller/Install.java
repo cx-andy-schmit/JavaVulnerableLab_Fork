@@ -113,9 +113,14 @@ public class Install extends HttpServlet {
                       if(con!=null && !con.isClosed())
                         {
                             //Database creation
-                             Statement stmt = con.createStatement();  
+                             Statement stmt = con.createStatement();
+                             // Validate dbname to prevent SQL injection
+                             // Database names in MySQL can only contain alphanumeric characters and underscores
+                             if (dbname == null || !dbname.matches("^[a-zA-Z0-9_]+$")) {
+                                 throw new SQLException("Invalid database name. Only alphanumeric characters and underscores are allowed.");
+                             }
                              stmt.executeUpdate("DROP DATABASE IF EXISTS "+dbname);
-                             
+
                              stmt.executeUpdate("CREATE DATABASE "+dbname);
                              con.close();
                             con= DriverManager.getConnection(dburl+dbname,dbuser,dbpass); 
