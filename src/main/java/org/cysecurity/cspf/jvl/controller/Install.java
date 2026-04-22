@@ -77,7 +77,7 @@ public class Install extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
          try {
             PrintWriter out = response.getWriter();
-            /* TODO output your page here. You may use following sample code. */
+            /* TODO output your page here. You may use following sample code. */    
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -97,7 +97,7 @@ public class Install extends HttpServlet {
         }
          catch(Exception e)
          {
-             
+             System.err.println("Error while processing installation response: " + e.getMessage());
          }
     }
      protected boolean setup(String i) throws IOException
@@ -118,7 +118,7 @@ public class Install extends HttpServlet {
                              
                              stmt.executeUpdate("CREATE DATABASE "+dbname);
                              con.close();
-                            con= DriverManager.getConnection(dburl+dbname,dbuser,dbpass);
+                            con= DriverManager.getConnection(dburl+dbname,dbuser,dbpass); 
                              stmt = con.createStatement();
                               if(!con.isClosed())
                             {
